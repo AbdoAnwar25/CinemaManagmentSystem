@@ -1,0 +1,79 @@
+﻿@model IEnumerable<Actor>
+
+<div class="content">
+    <div class="container-fluid">
+        <div class="row mb-3 align-items-center my-3">
+            <div class="col-md-6">
+                <h2 class="display-6">All Actors</h2>
+            </div>
+            <div class="col-md-6 text-md-end text-start mt-2 mt-md-0">
+                <a href="/Admin/Actor/Create" class="btn btn-success">Create</a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-none border">
+                    <div class="card-body">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Photo</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <th scope="row">@item.Id</th>
+                                        <td>
+                                            <img src="~/images/@item.Logo" alt="@item.Name" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;" />
+                                        </td>
+                                        <td>@item.Name</td>
+                                        <td>@item.Description</td>
+                                        <td class="text-nowrap">
+                                            <div class="d-flex gap-2">
+                                                <a href="/Admin/Actor/Update/@item.Id" class="btn btn-sm btn-warning">Edit</a>
+                                                <a href="/Admin/Actor/Delete/@item.Id" class="btn btn-sm btn-danger btn-delete">Delete</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                        <!-- 🚀 أزرار الـ Pagination -->
+                        @if (ViewBag.TotalPages > 1)
+                        {
+                            <nav aria-label="Page navigation" class="mt-4">
+                                <ul class="pagination justify-content-center mb-0">
+                                    <!-- زر الصفحة السابقة -->
+                                    <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
+                                        <a class="page-link" href="/Admin/Actor/Index?pageNumber=@(ViewBag.CurrentPage - 1)">Previous</a>
+                                    </li>
+
+                                    <!-- أرقام الصفحات -->
+                                    @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                                    {
+                                        <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                                            <a class="page-link" href="/Admin/Actor/Index?pageNumber=@i">@i</a>
+                                        </li>
+                                    }
+
+                                    <!-- زر الصفحة التالية -->
+                                    <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
+                                        <a class="page-link" href="/Admin/Actor/Index?pageNumber=@(ViewBag.CurrentPage + 1)">Next</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

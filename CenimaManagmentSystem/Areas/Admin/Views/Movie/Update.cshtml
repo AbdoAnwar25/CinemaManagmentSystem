@@ -1,0 +1,135 @@
+﻿@using CenimaManagmentSystem.ViewModels
+@model MovieVM
+
+<div class="content">
+    <div class="container-fluid px-4">
+        <div class="row mb-3 align-items-center my-3">
+            <div class="col-md-6">
+                <!-- تم تغيير العنوان ليكون مناسب للتعديل -->
+                <h2 class="display-6">Edit Movie</h2>
+            </div>
+        </div>
+
+        <div class="row my-3">
+            <div class="col-12">
+                <div class="card shadow-none border w-100">
+                    <div class="card-body px-4 py-4">
+                        <form method="post" enctype="multipart/form-data">
+                            
+                            <!-- هامة جداً: إرسال الـ Id والـ MainImg القديم بشكل مخفي عشان ما يرجعوش بـ Null -->
+                            <input type="hidden" name="Movie.Id" value="@Model.Movie.Id" />
+                            <input type="hidden" name="Movie.MainImg" value="@Model.Movie.MainImg" />
+
+                            <!-- Name -->
+                            <div class="mb-3">
+                                <label class="form-label">Name</label>
+                                <input class="form-control" name="Movie.Name" value="@Model.Movie.Name" required />
+                            </div>
+
+                            <!-- Price -->
+                            <div class="mb-3">
+                                <label class="form-label">Price</label>
+                                <input type="number" step="0.01" class="form-control" name="Movie.Price" value="@Model.Movie.Price" required />
+                            </div>
+
+                            <!-- Show Time (DateTime) -->
+                            <div class="mb-3">
+                                <label class="form-label">Show Time</label>
+                                <!-- بنعرض التاريخ والوقت القديم مظبوط -->
+                                <input type="datetime-local" class="form-control" name="Movie.DateTime" value="@Model.Movie.DateTime.ToString("yyyy-MM-ddTHH:mm")" required />
+                            </div>
+
+                            <!-- Main Image -->
+                            <div class="mb-3">
+                                <label class="form-label">Main Image</label>
+                                <!-- عرض الصورة الحالية لو حابب المستخدم يشوفها -->
+                                @if (!string.IsNullOrEmpty(Model.Movie.MainImg))
+                                {
+                                    <div class="mb-2">
+                                        <img src="~/images/@Model.Movie.MainImg" width="80" class="rounded" alt="Current Image" />
+                                    </div>
+                                }
+                                <input type="file" class="form-control" name="ImageFile" accept="image/*" />
+                            </div>
+                            
+                            <!-- SubImage -->
+                            <div class="mb-3">
+                                <label class="form-label"> SubImage </label>
+                                <input type="file" class="form-control" name="subImages" accept="image/*" multiple/>
+                            </div>
+
+                            <!-- Category Dropdown -->
+                            <div class="mb-3">
+                                <label class="form-label">Category</label>
+                                <select class="form-select" name="Movie.CategoryId" required>
+                                    <option value="">-- Select Category --</option>
+                                    @foreach (var category in Model.Categories)
+                                    {
+                                        // بنخلي الـ Category القديم بتاع الفيلم هو اللي مكتوب عليه selected
+                                        if (category.Id == Model.Movie.CategoryId)
+                                        {
+                                            <option value="@category.Id" selected>@category.Name</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@category.Id">@category.Name</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+
+                            <!-- Cinema Dropdown -->
+                            <div class="mb-3">
+                                <label class="form-label">Cinema</label>
+                                <select class="form-select" name="Movie.CinemaId" required>
+                                    <option value="">-- Select Cinema --</option>
+                                    @foreach (var cinema in Model.Cinemas)
+                                    {
+                                        // بنخلي الـ Cinema القديم بتاع الفيلم هو اللي مكتوب عليه selected
+                                        if (cinema.Id == Model.Movie.CinemaId)
+                                        {
+                                            <option value="@cinema.Id" selected>@cinema.Name</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@cinema.Id">@cinema.Name</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+
+                            <!-- Description -->
+                            <div class="mb-3">
+                                <label class="form-label">Description</label>
+                                <div class="form-floating">
+                                    <textarea class="form-control" placeholder="Leave a description here" style="height: 100px" name="Movie.Description">@Model.Movie.Description</textarea>
+                                    <label>Your Description Here...</label>
+                                </div>
+                            </div>
+
+                            <!-- Status -->
+                            <div class="mb-3">
+                                <label class="form-label">Status</label>
+                                <select class="form-select" name="Movie.Status">
+                                    @if (Model.Movie.Status)
+                                    {
+                                        <option value="True" selected>Online</option>
+                                        <option value="False">Offline</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="True">Online</option>
+                                        <option value="False" selected>Offline</option>
+                                    }
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                            <a href="/Admin/Movie/Index" class="btn btn-secondary ms-2">Back to List</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

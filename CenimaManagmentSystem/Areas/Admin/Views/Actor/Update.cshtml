@@ -1,0 +1,46 @@
+﻿@model Actor
+
+<div class="content">
+    <div class="container-fluid">
+        <div class="row mb-3 align-items-center my-3">
+            <div class="col-md-6">
+                <h2 class="display-6">Update Actor Info</h2>
+            </div>
+        </div>
+
+        <div class="row my-3">
+            <div class="col-12">
+                <div class="card shadow-none border">
+                    <div class="card-body">
+                        <form method="post" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Name</label>
+                                <input class="form-control"  name="Name" value="@Model.Name" required />
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="logo" class="form-label">Logo</label>
+                                <input type="file" class="form-control" name="ImageFile"  />
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description</label>
+                                <div class="form-floating">
+                                    <textarea class="form-control" placeholder="Leave a description here" style="height: 100px" name="Description">
+
+                                          @Model.Description
+
+                                    </textarea>
+                                    <label for="description">Your Description Here...</label>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <a href="/Admin/Actor/Index" class="btn btn-secondary ms-2">Back to List</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
