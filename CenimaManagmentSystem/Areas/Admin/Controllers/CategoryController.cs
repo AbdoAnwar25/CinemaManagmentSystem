@@ -1,5 +1,6 @@
 ﻿using CenimaManagmentSystem.Data;
 using CenimaManagmentSystem.Models;
+using CenimaManagmentSystem.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CenimaManagmentSystem.Areas.Admin.Controllers
@@ -7,12 +8,12 @@ namespace CenimaManagmentSystem.Areas.Admin.Controllers
     [Area("Admin")]
     public class CategoryController : Controller
     {
-        private readonly ApplicationDbContext _Context = new ApplicationDbContext();
-
-        public IActionResult Index()
+        //private readonly ApplicationDbContext _Context = new ApplicationDbContext();
+          private readonly Repository<Category> _categoryRepository = new Repository.Repository<Category>(); 
+        public async Task<IActionResult> Index()
         {
-            var categories = _Context.Categories.AsQueryable();
-
+            //var categories = _Context.Categories.AsQueryable();
+            var categories = await _categoryRepository.GetListAsync();
             return View(categories.AsEnumerable());
         }
 
@@ -25,10 +26,13 @@ namespace CenimaManagmentSystem.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create( Category category)
+        public async Task<IActionResult> Create( Category category)
         {
-            _Context.Categories.Add(category);
-            _Context.SaveChanges();
+            //_Context.Categories.Add(category);
+            //_Context.SaveChanges();
+
+            await _categoryRepository.AddAsync(category);
+            await _categoryRepository.CommitAsync();
 
             return RedirectToAction(nameof(Index));
         }
@@ -37,9 +41,10 @@ namespace CenimaManagmentSystem.Areas.Admin.Controllers
 
 
         [HttpGet]
-        public IActionResult Update( int Id )
+        public async Task<IActionResult> Update( int Id )
         {
-            var category = _Context.Categories.FirstOrDefault(c=>c.Id == Id);
+            //var category = _Context.Categories.FirstOrDefault(c=>c.Id == Id);
+              var category = await _categoryRepository.GetOneAsync(c=>c.Id == Id);
             if (category == null) 
             {
                 return NotFound();
@@ -48,19 +53,26 @@ namespace CenimaManagmentSystem.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Update(Category category)
+        public async Task<IActionResult> Update(Category category)
         {
-            _Context.Categories.Update(category);
-            _Context.SaveChanges();
+            //_Context.Categories.Update(category);
+            //_Context.SaveChanges();
+                  _categoryRepository.Update(category);
+            await _categoryRepository.CommitAsync();            
+
 
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var categoty = _Context.Categories.FirstOrDefault(c => c.Id == id);
-            _Context.Categories.Remove(categoty);
-            _Context.SaveChanges();
+            //var categoty = _Context.Categories.FirstOrDefault(c => c.Id == id);
+              var categoty =await _categoryRepository.GetOneAsync(c => c.Id == id);
+            //_Context.Categories.Remove(categoty);
+            //_Context.SaveChanges();
+
+                  _categoryRepository.Delete(categoty);
+            await _categoryRepository.CommitAsync();
 
             return RedirectToAction (nameof(Index));
         }

@@ -1,5 +1,6 @@
 ﻿using CenimaManagmentSystem.Data;
 using CenimaManagmentSystem.Models;
+using CenimaManagmentSystem.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
@@ -10,7 +11,9 @@ namespace CenimaManagmentSystem.Areas.Admin.Controllers
     [Area("Admin")]
     public class ActorController : Controller
     {
-        private readonly ApplicationDbContext _Context = new ApplicationDbContext();
+        
+        /// private readonly ApplicationDbContext _Context = new ApplicationDbContext();
+        private readonly Repository<Actor> _ActorRepository = new Repository<Actor>();
 
         //اندكس التطبيق
         //public IActionResult Index()
@@ -23,10 +26,11 @@ namespace CenimaManagmentSystem.Areas.Admin.Controllers
 
 
         // اندكس التاسك الي فيها فيلتر ب الديت و الباجينيشن
-        public IActionResult Index( int pageNumber = 1)
+        public async Task<IActionResult> Index( int pageNumber = 1)
         {
             int pageSize = 5; // عدد العناصر في كل صفحة (ممكن تغيرها براحتك)
-            var actors = _Context.Actors.AsQueryable();
+            ///var actors = _Context.Actors.AsQueryable();
+            var actors = await _ActorRepository.GetListAsync();
 
             // 1. لو في بحث بالتاريخ
          
@@ -55,7 +59,7 @@ namespace CenimaManagmentSystem.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Actor actor, IFormFile ImageFile) // الشرح تحت 
+        public async Task<IActionResult> Create(Actor actor, IFormFile ImageFile) // الشرح تحت 
         {
             if (ImageFile != null && ImageFile.Length > 0)
             {
@@ -71,17 +75,19 @@ namespace CenimaManagmentSystem.Areas.Admin.Controllers
                 actor.Logo = fileName;
 
             }
-            _Context.Actors.Add(actor);
-            _Context.SaveChanges();
+            ///_Context.Actors.Add(actor);
+            ///_Context.SaveChanges();
+            await _ActorRepository.AddAsync(actor);
+            await _ActorRepository.CommitAsync();
 
             return RedirectToAction(nameof(Index));
         }
 
 
         [HttpGet]
-        public IActionResult Update(int Id)
+        public async Task<IActionResult> Update(int Id)
         {
-            var actor = _Context.Actors.FirstOrDefault(c => c.Id == Id);
+            var actor = await _ActorRepository.GetOneAsync(c => c.Id == Id);
             if (actor == null)
             {
                 return NotFound();
@@ -90,10 +96,11 @@ namespace CenimaManagmentSystem.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Update(Actor actor, IFormFile ImageFile)
+        public async Task<IActionResult> Update(Actor actor, IFormFile ImageFile)
         {
             //عشان اجيب الداتا من الداتا بيز
-            var ActorInDb = _Context.Actors.AsNoTracking().FirstOrDefault(b => b.Id == actor.Id);
+            ///var ActorInDb = _Context.Actors.AsNoTracking().FirstOrDefault(b => b.Id == actor.Id);
+               var ActorInDb = await _ActorRepository.GetOneAsync(b => b.Id == actor.Id , isTraked : false);
 
             // اللفه بتاعه ابلود الفايلات او الصور
             if (ImageFile != null && ImageFile.Length > 0)
@@ -124,9 +131,10 @@ namespace CenimaManagmentSystem.Areas.Admin.Controllers
             }
 
 
-            _Context.Actors.Update(actor);
-            _Context.SaveChanges();
-
+            ///_Context.Actors.Update(actor);
+            ///_Context.SaveChanges();
+                  _ActorRepository.Update(actor);
+            await _ActorRepository.CommitAsync();
             return RedirectToAction(nameof(Index));
         }
 
@@ -134,9 +142,9 @@ namespace CenimaManagmentSystem.Areas.Admin.Controllers
 
 
 
-        public IActionResult Delete(int Id)
+        public async Task<IActionResult> Delete(int Id)
         {
-            var actor = _Context.Actors.FirstOrDefault(c => c.Id == Id);
+            var actor =await _ActorRepository.GetOneAsync(c => c.Id == Id);
 
             // دي عشان لما اخد فايل او صوره جديده يمسح القديم عشان المساحه
             var FilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", actor.Logo);
@@ -146,8 +154,10 @@ namespace CenimaManagmentSystem.Areas.Admin.Controllers
                 System.IO.File.Delete(FilePath);
             }
 
-            _Context.Actors.Remove(actor);
-            _Context.SaveChanges();
+            //_Context.Actors.Remove(actor);
+            //_Context.SaveChanges();
+            _ActorRepository.Delete(actor);
+            await _ActorRepository.CommitAsync();
 
             return RedirectToAction(nameof(Index));
         }

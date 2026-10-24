@@ -66,7 +66,7 @@
                                     @foreach (var category in Model.Categories)
                                     {
                                         // بنخلي الـ Category القديم بتاع الفيلم هو اللي مكتوب عليه selected
-                                        if (category.Id == Model.Movie.CategoryId)
+                                        if (category.Id == Model.Movie.CategoryId) /////// change 
                                         {
                                             <option value="@category.Id" selected>@category.Name</option>
                                         }
