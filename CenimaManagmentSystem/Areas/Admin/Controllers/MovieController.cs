@@ -5,7 +5,7 @@ using CenimaManagmentSystem.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
-
+// ===> /// for solid principals changes
 namespace CenimaManagmentSystem.Areas.Admin.Controllers
 {
 
@@ -13,19 +13,29 @@ namespace CenimaManagmentSystem.Areas.Admin.Controllers
     public class MovieController : Controller
     {
         ///private readonly ApplicationDbContext _Context = new ApplicationDbContext();
-        private readonly Repository<Movie> _MovieRepository = new Repository<Movie>();
-        private readonly Repository<Category> _CategoryRepository = new Repository<Category>();
-        private readonly Repository<Cinema> _CinemaRepository = new Repository<Cinema>();
-        private readonly Repository<MovieSubImage> _MovieSubImageRepository = new Repository<MovieSubImage>();
+                                                             /// ممكن ارجعها تاني عادي object 
+        private readonly IRepository<Movie>   _MovieRepository; //= new Repository<Movie>();
+        private readonly IRepository<Category> _CategoryRepository ; //= new Repository<Category>();
+        private readonly IRepository<Cinema>  _CinemaRepository; // = new Repository<Cinema>();
+        private readonly IRepository<Actor>  _ActorRepository; // = new Repository<Cinema>();
+        private readonly IMovieSubImageRepository _MovieSubImageRepository; // = new MovieSubImageRepository();
 
-        //اندكس التطبيق
-        //public IActionResult Index()
-        //{
+        public MovieController(IRepository<Movie> movieRepository, IRepository<Category> categoryRepository, IRepository<Cinema> cinemaRepository, IMovieSubImageRepository movieSubImageRepository , IRepository<Actor> actorRepository)
+        {
+            _MovieRepository = movieRepository;
+            _CategoryRepository = categoryRepository;
+            _CinemaRepository = cinemaRepository;
+            _MovieSubImageRepository = movieSubImageRepository;
+            _ActorRepository = actorRepository;
+        }
 
-        //    var movies = _Context.Movies.AsQueryable();
 
-        //    return View(movies.AsEnumerable());
-        //}
+
+
+
+
+
+
 
 
         // اندكس التاسك الي فيها فيلتر ب الديت و الباجينيشن
@@ -34,9 +44,6 @@ namespace CenimaManagmentSystem.Areas.Admin.Controllers
             int pageSize = 5; // عدد العناصر في كل صفحة (ممكن تغيرها براحتك)
           //var movies = _Context.Movies.AsQueryable();
             var movies =await _MovieRepository.GetListAsync();
-
-            // 1. لو في بحث بالتاريخ
-
 
             // حساب إجمالي عدد العناصر عشان نعرف هنعمل كم صفحة (لو احتجناها)
             int totalItems = movies.Count();
@@ -138,8 +145,6 @@ namespace CenimaManagmentSystem.Areas.Admin.Controllers
 
 
 
-
-
         [HttpGet]
         public async Task<IActionResult> Update(int Id)
         {
@@ -210,12 +215,16 @@ namespace CenimaManagmentSystem.Areas.Admin.Controllers
             if (subImages != null && subImages.Count > 0)
             {
                 var oldsubImages = await _MovieSubImageRepository.GetListAsync(m=>m.MovieId == movie.Id); // <==== something (was) wrong
-                //delete old imgs from db
-                //***** generic removerange is not declared yet  <===
+                            
+
+                   //Open closed principal
+                //***** removerange ( MovieSubImageRepository )  is declared   <===
+
                 //_Context.MovieSubImages.RemoveRange(oldsubImages);
                 //_Context.SaveChanges();
 
-                 await _MovieSubImageRepository.CommitAsync();
+                _MovieSubImageRepository.RemoveRange(oldsubImages);
+                await _MovieSubImageRepository.CommitAsync();
 
 
 

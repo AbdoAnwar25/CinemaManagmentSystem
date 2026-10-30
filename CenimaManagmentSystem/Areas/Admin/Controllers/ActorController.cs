@@ -11,9 +11,16 @@ namespace CenimaManagmentSystem.Areas.Admin.Controllers
     [Area("Admin")]
     public class ActorController : Controller
     {
-        
+
         /// private readonly ApplicationDbContext _Context = new ApplicationDbContext();
-        private readonly Repository<Actor> _ActorRepository = new Repository<Actor>();
+        private readonly IRepository<Actor> _ActorRepository; // = new Repository<Actor>();
+
+        public ActorController(IRepository<Actor> actorRepository)
+        {
+            _ActorRepository = actorRepository;
+        }
+
+
 
         //اندكس التطبيق
         //public IActionResult Index()

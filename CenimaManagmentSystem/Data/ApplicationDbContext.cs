@@ -6,18 +6,27 @@ namespace CenimaManagmentSystem.Data
     public class ApplicationDbContext : DbContext
     {
 
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        {
+        }
+
         public DbSet<Category> Categories { get; set; }
         public DbSet<Cinema> Cinemas { get; set; }
         public DbSet<Actor> Actors { get; set; }
         public DbSet<Movie> Movies { get; set; }
         public DbSet<MovieSubImage> MovieSubImages { get; set; }
         
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            base.OnConfiguring(optionsBuilder);
 
-            optionsBuilder.UseSqlServer("Data Source=DESKTOP-8FGDB4A;initial catalog=CinemaManagmentSystem;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;");
-        }
+        /// we done dependency injection
+        /// through "AppSettings.Json" and "Program.cs"
+        
+
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    base.OnConfiguring(optionsBuilder);
+
+        //    optionsBuilder.UseSqlServer("Data Source=DESKTOP-8FGDB4A;initial catalog=CinemaManagmentSystem;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;");
+        //}
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

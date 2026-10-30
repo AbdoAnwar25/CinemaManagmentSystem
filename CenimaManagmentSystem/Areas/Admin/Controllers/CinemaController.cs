@@ -13,7 +13,12 @@ namespace CenimaManagmentSystem.Areas.Admin.Controllers
     {
         // using Generit repo.
         //private readonly ApplicationDbContext _Context = new ApplicationDbContext();
-        private readonly Repository<Cinema> _CinemaRepository = new Repository<Cinema>();
+        private readonly IRepository<Cinema> _CinemaRepository; // = new Repository<Cinema>();
+
+        public CinemaController(IRepository<Cinema> cinemaRepository)
+        {
+            _CinemaRepository = cinemaRepository;
+        }
 
         //اندكس التطبيق
         //public IActionResult Index()

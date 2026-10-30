@@ -9,7 +9,13 @@ namespace CenimaManagmentSystem.Areas.Admin.Controllers
     public class CategoryController : Controller
     {
         //private readonly ApplicationDbContext _Context = new ApplicationDbContext();
-          private readonly Repository<Category> _categoryRepository = new Repository.Repository<Category>(); 
+        private readonly IRepository<Category> _categoryRepository; // = new Repository.Repository<Category>(); 
+
+        public CategoryController(IRepository<Category> categoryRepository)
+        {
+            _categoryRepository = categoryRepository;
+        }
+
         public async Task<IActionResult> Index()
         {
             //var categories = _Context.Categories.AsQueryable();

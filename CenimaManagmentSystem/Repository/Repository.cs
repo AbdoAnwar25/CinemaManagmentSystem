@@ -7,17 +7,19 @@ using System.Linq.Expressions;
 
 namespace CenimaManagmentSystem.Repository
 {
-    public class Repository<T> where T : class
+    public class Repository<T> : IRepository<T> where T : class
     {
-        private readonly ApplicationDbContext _Context = new ApplicationDbContext();
+        protected readonly ApplicationDbContext _Context; //= new ApplicationDbContext();
 
         ///////// generic Repository => 
 
         private DbSet<T> _dbSet;
 
-        public Repository()
+        public Repository(ApplicationDbContext context)
         {
+            _Context = context;
             _dbSet = _Context.Set<T>();
+           
         }
         // => switch all (_Context.Categories) with   (_dbset) 
         // =>       and        (Category)      with   ( T )
