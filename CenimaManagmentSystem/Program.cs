@@ -1,6 +1,10 @@
 using CenimaManagmentSystem.Data;
 using CenimaManagmentSystem.Models;
 using CenimaManagmentSystem.Repository;
+using CenimaManagmentSystem.Utilities;
+using Ecommerce533.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,12 +25,27 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     );
 
 
-/// 
+// register
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+{
+    options.User.RequireUniqueEmail = true;
+    options.SignIn.RequireConfirmedEmail = true;
+    //options.Lockout.MaxFailedAccessAttempts =10;
+    //options.Password 
+    //options.SignIn
+}).AddEntityFrameworkStores<ApplicationDbContext>()
+   .AddDefaultTokenProviders();
+
+
+///        
+
 builder.Services.AddScoped<IRepository<Category> , Repository<Category>>();
 builder.Services.AddScoped<IRepository<Cinema> , Repository<Cinema>>();
 builder.Services.AddScoped<IRepository<Movie> , Repository<Movie>>();
 builder.Services.AddScoped<IRepository<Actor> , Repository<Actor>>();
+builder.Services.AddScoped<IRepository<ApplicationUserOtp> , Repository<ApplicationUserOtp>>();
 builder.Services.AddScoped<IMovieSubImageRepository , MovieSubImageRepository>();
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 
 var app = builder.Build();
@@ -60,7 +79,7 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{area=Admin}/{controller=Movie}/{action=Index}/{id?}")
+    pattern: "{area=Identity}/{controller=Account}/{action=Register}/{id?}")
     .WithStaticAssets();
 
 

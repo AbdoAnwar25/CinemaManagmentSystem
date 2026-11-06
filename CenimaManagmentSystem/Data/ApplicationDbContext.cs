@@ -1,9 +1,10 @@
 ﻿using CenimaManagmentSystem.Models;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Ecommerce533.Models;
 namespace CenimaManagmentSystem.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
@@ -15,6 +16,7 @@ namespace CenimaManagmentSystem.Data
         public DbSet<Actor> Actors { get; set; }
         public DbSet<Movie> Movies { get; set; }
         public DbSet<MovieSubImage> MovieSubImages { get; set; }
+        public DbSet<ApplicationUserOtp> ApplicationUserOtps { get; set; }
         
 
         /// we done dependency injection
